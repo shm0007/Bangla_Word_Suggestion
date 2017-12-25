@@ -10,15 +10,17 @@ import java.util.logging.Logger;
 class TrieNode 
 {
     char content; 
-    boolean isEnd; 
+    int isEnd; 
     int count;  
+
     LinkedList<TrieNode> childList; 
     public TrieNode(char c)
     {
         childList = new LinkedList<TrieNode>();
-        isEnd = false;
+        isEnd = 0;
         content = c;
         count = 0;
+        
     }  
     public TrieNode subNode(char c)
     {
@@ -29,11 +31,30 @@ class TrieNode
         return null;
     }
 }
+  class Pair implements Comparable<Pair> {
+            String val;
+            int dist;
+
+            Pair(String val, int dist) {
+                this.val = val;
+                this.dist = dist;
+            }
+
+            @Override
+            public int compareTo(Pair o) {
+                if (o.dist > dist)
+                    return 1;
+                if (o.dist < dist)
+                    return -1;
+                return 0;
+            }
+        }
  class Trie 
 {
     private TrieNode root;
     private String suggestion;
     private  ArrayList<String>answerList;
+    private PriorityQueue<Pair> queue;
     private String prefixWord;
     public Trie() throws IOException
     {
@@ -42,7 +63,7 @@ class TrieNode
         init();
     }
      /* Function to insert word */
-    public void insert(String word)
+    public void insert(String word, int freq)
     {
         TrieNode current = root; 
         for (char ch : word.toCharArray() )
@@ -57,11 +78,12 @@ class TrieNode
             }
             current.count++;
         }
-        current.isEnd = true;
+        current.isEnd = freq;
     }
-    public ArrayList<String>  search(String word)
+    public  ArrayList<String>  search(String word)
     {
-        answerList = new  ArrayList<String>();
+        queue  = new PriorityQueue<>();
+        answerList = new ArrayList<String>();
         TrieNode current = root;  
         for (char ch : word.toCharArray() )
         {
@@ -76,14 +98,20 @@ class TrieNode
             prefixWord=word;
             getChild(eachChild);
         }
+    while (queue.size() > 0 && answerList.size()<10) 
+    {
+        answerList.add(queue.poll().val);
+
+    }
        return answerList;
+    
     }
     public void getChild(TrieNode curr)
     {
-        if(curr.isEnd==true) {
+        if(curr.isEnd!=0) {
             
            suggestion +=curr.content;
-           answerList.add(prefixWord+suggestion);
+           queue.add(new Pair(prefixWord+suggestion,curr.isEnd ) );
            suggestion = "";
            return;
         }
@@ -98,7 +126,7 @@ class TrieNode
     public void init() throws IOException
     {
 
-        File fileDir = new File("words.txt");
+        File fileDir = new File("WordsEnglish.txt");
         BufferedReader in = new BufferedReader(
            new InputStreamReader(
                       new FileInputStream(fileDir), "UTF8"));
@@ -106,8 +134,10 @@ class TrieNode
 
         while ((str = in.readLine()) != null) {
 
-           // System.out.print(str);
-            insert(str);
+            String val[] = str.split(" ");
+
+           // System.out.println(val[0]+"   "+ val[1]);
+            insert(val[0],Integer.parseInt(val[1]));
         }
 
 
