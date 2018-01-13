@@ -11,22 +11,8 @@ public class Main
         try {
             Trie t = new Trie();
             String input = "a";
-            ArrayList<Pair> answer=   t.search(input);
-            for (Pair object: answer) {
-                System.out.println("Suggestion : "+object.val + " " + object.dist);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Trie.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    /* for getting just output suggestion string
-    public static void main(String[] args)
-    {            
-        try {
-            Trie t = new Trie();
-            String input = "a";
             ArrayList<String> answer=   t.search(input);
-
+            System.out.println("ANSSSS>>>>"answer.size());
             for (String object: answer) {
                 System.out.println("Suggestion : "+object);
             }
@@ -34,6 +20,4 @@ public class Main
             Logger.getLogger(Trie.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    */
-
 }

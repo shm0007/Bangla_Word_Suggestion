@@ -80,15 +80,18 @@ class TrieNode
         }
         current.isEnd = freq;
     }
-    public  ArrayList<String>  search(String word)
+    public  ArrayList<Pair>  search(String word)
     {
         queue  = new PriorityQueue<>();
         answerList = new ArrayList<String>();
+        ArrayList<Pair> answerPair = new ArrayList<Pair>();
         TrieNode current = root;  
         for (char ch : word.toCharArray() )
         {
             if (current.subNode(ch) == null)
-                return new ArrayList<String>();
+                return new ArrayList<Pair>();
+//remove comment                return new ArrayList<String>();
+
             else
                 current = current.subNode(ch);
         }  
@@ -96,30 +99,29 @@ class TrieNode
         {
             suggestion = "";
             prefixWord=word;
-            getChild(eachChild);
+            getChild(eachChild,prefixWord);
         }
-    while (queue.size() > 0 && answerList.size()<10) 
+    while (queue.size() > 0 && answerPair.size()<10) // change to answerList.size()
     {
-        answerList.add(queue.poll().val);
+//remove comment        answerList.add(queue.poll().val);
+        answerPair.add(queue.poll());
 
     }
-       return answerList;
+       return answerPair;
     
     }
-    public void getChild(TrieNode curr)
+    public void getChild(TrieNode curr, String currentSuggestion)
     {
         if(curr.isEnd!=0) {
             
-           suggestion +=curr.content;
-           queue.add(new Pair(prefixWord+suggestion,curr.isEnd ) );
-           suggestion = "";
-           return;
+           currentSuggestion +=curr.content;
+           queue.add(new Pair(currentSuggestion,curr.isEnd ) );
+          // return;
         }
+     currentSuggestion +=curr.content;
        for (TrieNode eachChild : curr.childList)
        {
-//           System.out.print(curr.content);
-            suggestion +=curr.content;
-            getChild(eachChild);
+            getChild(eachChild,currentSuggestion);
        }
        return;
     }
@@ -131,16 +133,11 @@ class TrieNode
            new InputStreamReader(
                       new FileInputStream(fileDir), "UTF8"));
         String str;
-
+        int tt=0;
         while ((str = in.readLine()) != null) {
-
             String val[] = str.split(" ");
-
-           // System.out.println(val[0]+"   "+ val[1]);
             insert(val[0],Integer.parseInt(val[1]));
         }
-
-
     }
      
 }    
